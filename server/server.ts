@@ -22,6 +22,11 @@ app.use(express.static(reactStaticDir));
 app.use(express.static(uploadsStaticDir));
 app.use(express.json());
 
+/*
+put my routes here.
+original code:
+*/
+
 app.get('/api/hello', (req, res) => {
   res.json({ message: 'Hello, World!' });
 });
