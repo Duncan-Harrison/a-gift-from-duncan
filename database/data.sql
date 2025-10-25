@@ -1,6 +1,6 @@
 -- Use SQL insert statements to add any
 -- starting/dummy data to your database tables
-
+-- insert into "recipes" ("idMeal", "strMeal", "strInstructions", "strMealThumb", "ingredients", "measurements", "strYoutube", "userId", "sharedBy", "seenShared")
 -- EXAMPLE:
 
 --  insert into "todos"
