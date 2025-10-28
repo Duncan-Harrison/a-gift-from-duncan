@@ -35,7 +35,6 @@ const uploadsStaticDir = new URL('public', import.meta.url).pathname;
 app.use(express.static(reactStaticDir));
 // Static directory for file uploads server/public/
 app.use(express.static(uploadsStaticDir));
-app.use(express.json());
 
 /*
 put my routes here.
@@ -56,7 +55,7 @@ app.get('/api/recipes', async (req, res, next) => {
   /* res.json({ message: 'Hello, World!' }); */
 });
 
-application.post('/api/recipes', async (req, res, next) => {
+app.post('/api/recipes', async (req, res, next) => {
   try {
     const {
       idMeal,
@@ -67,6 +66,7 @@ application.post('/api/recipes', async (req, res, next) => {
       measurements,
       strYoutube,
     } = req.body;
+    console.log('Recipe Body', req.body);
     if (idMeal === undefined || strMeal === undefined) {
       throw new ClientError(400, `idMeal or name of Meal is missing`);
     }

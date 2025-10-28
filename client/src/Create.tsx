@@ -60,13 +60,18 @@ export function SearchRecipe() {
         `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${idMeal}`,
         { method: 'GET' }
       );
-      const preppedRecipe = await fetch(initialRecipe);
-      if (!preppedRecipe.ok) throw new Error(`Recipe could not be found.`);
-      const savedRecipe = new Request(`/api/recipes`, {
+      const preppedRecipeReq = await fetch(initialRecipe);
+      if (!preppedRecipeReq.ok) throw new Error(`Recipe could not be found.`);
+      const preppedRecipeRes = await preppedRecipeReq.json();
+      console.log(preppedRecipeRes);
+      const preppedRecipe: Recipe = preppedRecipeRes.meals[0];
+      console.log('preppedRecipe: ', preppedRecipe);
+      const savedRecipeReq = {
         method: 'POST',
         body: JSON.stringify(preppedRecipe),
-      });
-      const response = await fetch(savedRecipe);
+        headers: { 'Content-Type': 'application/json' },
+      };
+      const response = await fetch(`/api/recipes`, savedRecipeReq);
       if (!response.ok) throw new Error(`Recipe will not save at this time.`);
       const result = (await response.json()) as Recipe;
       alert(result);
