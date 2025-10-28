@@ -92,7 +92,7 @@ export function SearchRecipe() {
   return (
     <div>
       <div>
-        <select onChange={handleChange}>
+        <select name="Ingredient Select" onChange={handleChange}>
           {ingredients &&
             ingredients.map((ing: Ingredient) => (
               <option key={ing.idIngredient} value={ing.strIngredient}>
@@ -107,10 +107,14 @@ export function SearchRecipe() {
           <div className="card-body" key={r.idMeal}>
             <div className="col">
               <div className="row">
-                <div className="col">
-                  <img src={r.strMealThumb} alt={r.strMeal} />
+                <div className="col-4">
+                  <img
+                    src={r.strMealThumb}
+                    className="img-fluid"
+                    alt={r.strMeal}
+                  />
                 </div>
-                <div className="col">
+                <div className="col-8">
                   <h3>{r.strMeal}</h3>
                   <button
                     className="btn btn-primary"
@@ -118,9 +122,6 @@ export function SearchRecipe() {
                     Save Recipe
                   </button>
                 </div>
-              </div>
-              <div className="row">
-                <p>{r.strInstructions}</p>
               </div>
             </div>
           </div>
