@@ -1,5 +1,5 @@
-import { ReactNode, createContext, useState } from 'react';
-// import {removeAuth, saveAuth} from "data.ts"
+import { ReactNode, createContext, useEffect, useState } from 'react';
+import { removeAuth, saveAuth, readUser, readToken } from './data';
 
 export type User = {
   userId: number;
@@ -31,9 +31,26 @@ type Props = {
 export function UserProvider({ children }: Props) {
   const [user, setUser] = useState<User>();
   const [token, setToken] = useState<string>();
+
+  useEffect(() => {
+    setUser(readUser());
+    setToken(readToken());
+  }, []);
+
   function handleSignIn(user: User, token: string) {
     setUser(user);
     setToken(token);
     saveAuth(user, token);
   }
+
+  function handleSignOut() {
+    setUser(undefined);
+    setToken(undefined);
+    removeAuth();
+  }
+
+  const contextValue = { user, token, handleSignIn, handleSignOut };
+  return (
+    <UserContext.Provider value={contextValue}>{children}</UserContext.Provider>
+  );
 }

@@ -63,7 +63,6 @@ app.post('/api/recipes', async (req, res, next) => {
       strInstructions,
       strMealThumb,
       ingredients,
-      measurements,
       strYoutube,
     } = req.body;
     console.log('Recipe Body', req.body);
@@ -71,8 +70,8 @@ app.post('/api/recipes', async (req, res, next) => {
       throw new ClientError(400, `idMeal or name of Meal is missing`);
     }
     const sql = `
-      insert into "recipes" ("idMeal", "strMeal", "strInstructions", "strMealThumb", "ingredients", "measurements", "strYoutube")
-      values ($1, $2, $3, $4, $5, $6, $7)
+      insert into "recipes" ("idMeal", "strMeal", "strInstructions", "strMealThumb", "ingredients", "strYoutube")
+      values ($1, $2, $3, $4, $5, $6)
       returning *;
     `;
     const params = [
@@ -81,7 +80,6 @@ app.post('/api/recipes', async (req, res, next) => {
       strInstructions,
       strMealThumb,
       ingredients,
-      measurements,
       strYoutube,
     ];
     const result = await db.query(sql, params);
@@ -112,18 +110,18 @@ app.post('/api/auth/sign-up', async (req, res, next) => {
     if (!username || !password) {
       throw new ClientError(400, 'username and password are required fields');
     }
-    const hashedPassword = await argon2.hash(password);
-    if (!hashedPassword)
+    const hashedpassword = await argon2.hash(password);
+    if (!hashedpassword)
       throw new ClientError(
         404,
         'Password could not be accepted. Please try again.'
       );
     const sql = `
-      insert into "users" ("username", "hashedPassword")
+      insert into "users" ("username", "hashedpassword")
       values ($1, $2)
       returning *;
     `;
-    const params = [username, hashedPassword];
+    const params = [username, hashedpassword];
     const result = await db.query(sql, params);
     const newUser = result.rows[0];
     if (!newUser)
@@ -151,7 +149,7 @@ app.post('/api/auth/sign-in', async (req, res, next) => {
     const user = result.rows[0];
     const hashKey = process.env.TOKEN_SECRET;
     if (!hashKey) throw new Error('TOKEN_SECRET not found in .env');
-    if (!(await argon2.verify(user.hashedPassword, password)))
+    if (!(await argon2.verify(user.hashedpassword, password)))
       throw new ClientError(401, 'invalid login');
     const { userId } = user;
     const payload = { userId, username };

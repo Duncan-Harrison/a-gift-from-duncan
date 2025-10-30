@@ -63,8 +63,8 @@ export function SearchRecipe() {
       const preppedRecipeReq = await fetch(initialRecipe);
       if (!preppedRecipeReq.ok) throw new Error(`Recipe could not be found.`);
       const preppedRecipeRes = await preppedRecipeReq.json();
-      console.log(preppedRecipeRes);
       const preppedRecipe: Recipe = preppedRecipeRes.meals[0];
+      addIngredientsAndMeasurements(preppedRecipe);
       console.log('preppedRecipe: ', preppedRecipe);
       const savedRecipeReq = {
         method: 'POST',
@@ -74,10 +74,29 @@ export function SearchRecipe() {
       const response = await fetch(`/api/recipes`, savedRecipeReq);
       if (!response.ok) throw new Error(`Recipe will not save at this time.`);
       const result = (await response.json()) as Recipe;
-      alert(result);
+      alert(result.strMeal + ' has been saved to Your Recipes!');
     } catch (err) {
       console.error(err);
     }
+  }
+
+  function addIngredientsAndMeasurements(recipe: Recipe): Recipe {
+    recipe.ingredients = [];
+    for (let i = 1; i <= 20; i++) {
+      const ingredientKey = `strIngredient${i}` as keyof Recipe;
+      const measureKey = `strMeasure${i}` as keyof Recipe;
+      const ingVal = recipe[ingredientKey];
+      const measVal = recipe[measureKey];
+      const ingredient = typeof ingVal === 'string' ? ingVal.trim() : '';
+      const measurement = typeof measVal === 'string' ? measVal.trim() : '';
+      if (ingredient) {
+        const entry = measurement
+          ? `${ingredient}, ${measurement}`
+          : ingredient;
+        recipe.ingredients.push(entry);
+      }
+    }
+    return recipe;
   }
 
   if (isLoading) return <div className="card-body">Loading...</div>;
@@ -98,6 +117,7 @@ export function SearchRecipe() {
     <div>
       <div>
         <select name="Ingredient Select" onChange={handleChange}>
+          <option value="">--Please choose an ingredient--</option>
           {ingredients &&
             ingredients.map((ing: Ingredient) => (
               <option key={ing.idIngredient} value={ing.strIngredient}>
