@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { type Recipe } from './Read';
+import { readToken } from './data';
 
 export type Ingredient = {
   idIngredient: string;
@@ -69,12 +70,16 @@ export function SearchRecipe() {
       const savedRecipeReq = {
         method: 'POST',
         body: JSON.stringify(preppedRecipe),
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${readToken()}`,
+        },
       };
       const response = await fetch(`/api/recipes`, savedRecipeReq);
       if (!response.ok) throw new Error(`Recipe will not save at this time.`);
       const result = (await response.json()) as Recipe;
       alert(result.strMeal + ' has been saved to Your Recipes!');
+      setRecipes([...recipes, result]);
     } catch (err) {
       console.error(err);
     }

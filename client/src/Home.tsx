@@ -24,7 +24,8 @@ export function Home() {
       }
     }
     setIsLoading(true);
-    loadRecipes();
+    if (user) loadRecipes();
+    else setIsLoading(false);
   }, []);
 
   if (isLoading) return <div>Loading...</div>;
@@ -39,35 +40,42 @@ export function Home() {
   return (
     <div>
       {!user && (
-        <div className="flex">
-          <div>
-            <button className="btn" onClick={() => navigate('sign-up')}>
-              Sign Up
-            </button>
-          </div>
-          <div>
-            <button className="btn" onClick={() => navigate('sign-in')}>
-              Sign In
-            </button>
+        <div className="card">
+          <div className="card-body">
+            <div className="m-2">
+              <button
+                className="btn btn-primary"
+                onClick={() => navigate('sign-up')}>
+                Sign Up
+              </button>
+            </div>
+            <div className="m-2">
+              <button
+                className="btn btn-primary"
+                onClick={() => navigate('sign-in')}>
+                Sign In
+              </button>
+            </div>
           </div>
         </div>
       )}
       {user && (
         <div className="flex">
           {recipes?.map((recipe) => (
-            <Link
-              to={`/details/${recipe.idMeal}`}
-              key={recipe.idMeal}
-              className="Card"
-              onClick={SingleRecipe}>
-              <img className="card-picture" src={recipe.strMealThumb} />
-              <h3>{recipe.strMeal}</h3>
-              <div>
-                <p>{recipe.measurements}</p>
-                <p>{recipe.ingredients}</p>
-              </div>
-              <p>{recipe.strInstructions}</p>
-            </Link>
+            <div className="card" key={recipe.idMeal}>
+              <Link
+                to={`/recipes/${recipe.idMeal}`}
+                className="card-body"
+                onClick={() => SingleRecipe}>
+                <img className="card-picture" src={recipe.strMealThumb} />
+                <h3>{recipe.strMeal}</h3>
+                <div>
+                  <p>{recipe.measurements}</p>
+                  <p>{recipe.ingredients}</p>
+                </div>
+                <p>{recipe.strInstructions}</p>
+              </Link>
+            </div>
           ))}
         </div>
       )}

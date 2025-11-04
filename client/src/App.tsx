@@ -5,6 +5,7 @@ import { Home } from './Home';
 import { SearchRecipe } from './Create';
 import { AuthPage } from './AuthPage';
 import { UserProvider } from './UserContext';
+import { SingleRecipe } from './SingleRecipe';
 
 export default function App() {
   return (
@@ -13,6 +14,7 @@ export default function App() {
         <Route path="/" element={<Header />}>
           <Route index element={<Home />} />
           <Route path="/create" element={<SearchRecipe />} />
+          <Route path="/recipes/:idMeal" element={<SingleRecipe />} />
           <Route path="/sign-up" element={<AuthPage mode="sign-up" />} />
           <Route path="/sign-in" element={<AuthPage mode="sign-in" />} />
         </Route>

@@ -2,7 +2,7 @@
 import 'dotenv/config';
 import express, { application } from 'express';
 import pg from 'pg';
-import { ClientError, errorMiddleware } from './lib/index.js';
+import { authMiddleware, ClientError, errorMiddleware } from './lib/index.js';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 
@@ -41,13 +41,15 @@ put my routes here.
 original code:
 */
 
-app.get('/api/recipes', async (req, res, next) => {
+app.get('/api/recipes', authMiddleware, async (req, res, next) => {
   try {
     const sql = `
       select *
-      from "recipes";
+      from "recipes"
+      where "userId" = $1;
     `;
-    const result = await db.query(sql);
+    const params = [req.user?.userId];
+    const result = await db.query(sql, params);
     res.json(result.rows);
   } catch (err) {
     next(err);
@@ -55,7 +57,76 @@ app.get('/api/recipes', async (req, res, next) => {
   /* res.json({ message: 'Hello, World!' }); */
 });
 
-app.post('/api/recipes', async (req, res, next) => {
+app.get('/api/recipes/:idMeal', authMiddleware, async (req, res, next) => {
+  try {
+    const idMeal = req.params.idMeal;
+    if (!idMeal) throw new ClientError(400, 'Cannot recognize the idMeal');
+    const sql = `
+      SELECT
+  CASE
+    WHEN r."sharedBy" IS NOT NULL THEN u."username"
+    ELSE NULL
+  END AS "username",
+  r."idMeal",
+  r."strMeal",
+  r."strInstructions",
+  r."strMealThumb",
+  r."ingredients",
+  r."strYoutube",
+  r."userId",
+  r."sharedBy",
+  r."seenShared"
+FROM "recipes" AS r
+LEFT JOIN "users" AS u
+  ON u."userId" = r."sharedBy"
+WHERE r."idMeal" = $1;
+    `;
+    const params = [idMeal];
+    const result = await db.query(sql, params);
+    if (!result.rows[0])
+      throw new ClientError(404, `Cannot find recipe with ID ${idMeal}`);
+    res.status(200).json(result.rows[0]);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.get('/api/recipes/:strMeal', authMiddleware, async (req, res, next) => {
+  try {
+    const strMeal = req.params.strMeal;
+    if (!strMeal)
+      throw new ClientError(400, 'Cannot recognize the meal by name');
+    const sql = `
+      SELECT
+  CASE
+    WHEN r."sharedBy" IS NOT NULL THEN u."username"
+    ELSE NULL
+  END AS "username",
+  r."idMeal",
+  r."strMeal",
+  r."strInstructions",
+  r."strMealThumb",
+  r."ingredients",
+  r."strYoutube",
+  r."userId",
+  r."sharedBy",
+  r."seenShared"
+FROM "recipes" AS r
+LEFT JOIN "users" AS u
+  ON u."userId" = r."sharedBy"
+WHERE r."strMeal" = $1;
+    `;
+    const params = [strMeal];
+    const result = await db.query(sql, params);
+    if (!result.rows[0])
+      throw new ClientError(404, `Cannot find recipe named ${strMeal}`);
+    res.status(200).json(result.rows[0]);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.post('/api/recipes', authMiddleware, async (req, res, next) => {
   try {
     const {
       idMeal,
@@ -70,8 +141,8 @@ app.post('/api/recipes', async (req, res, next) => {
       throw new ClientError(400, `idMeal or name of Meal is missing`);
     }
     const sql = `
-      insert into "recipes" ("idMeal", "strMeal", "strInstructions", "strMealThumb", "ingredients", "strYoutube")
-      values ($1, $2, $3, $4, $5, $6)
+      insert into "recipes" ("idMeal", "strMeal", "strInstructions", "strMealThumb", "ingredients", "strYoutube", "userId")
+      values ($1, $2, $3, $4, $5, $6, $7)
       returning *;
     `;
     const params = [
@@ -81,6 +152,7 @@ app.post('/api/recipes', async (req, res, next) => {
       strMealThumb,
       ingredients,
       strYoutube,
+      req.user?.userId,
     ];
     const result = await db.query(sql, params);
     const mealList = result.rows[0];
@@ -91,7 +163,68 @@ app.post('/api/recipes', async (req, res, next) => {
   }
 });
 
-app.get('/api/faveIngredients', async (req, res, next) => {
+app.post('/api/recipes/shared', authMiddleware, async (req, res, next) => {
+  try {
+    const {
+      idMeal,
+      strMeal,
+      strInstructions,
+      strMealThumb,
+      ingredients,
+      strYoutube,
+      userId,
+    } = req.body;
+    console.log('Recipe Body', req.body);
+    if (idMeal === undefined || strMeal === undefined) {
+      throw new ClientError(400, `idMeal or name of Meal is missing`);
+    }
+    const sql = `
+      insert into "recipes" ("idMeal", "strMeal", "strInstructions", "strMealThumb", "ingredients", "strYoutube", "userId", "sharedBy")
+      values ($1, $2, $3, $4, $5, $6, $7, $8)
+      returning *;
+    `;
+    const params = [
+      idMeal,
+      strMeal,
+      strInstructions,
+      strMealThumb,
+      ingredients,
+      strYoutube,
+      userId,
+      req.user?.userId,
+    ];
+    const result = await db.query(sql, params);
+    const mealList = result.rows[0];
+    if (!mealList) throw new ClientError(404, `Cannot find added recipe`);
+    res.status(201).json(mealList);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.get('/api/users/:username', authMiddleware, async (req, res, next) => {
+  try {
+    const { username } = req.body;
+    const sql = `
+    select "username",
+          "userId"
+    from "users"
+    where "username" = $1;
+    `;
+    const params = [username];
+    const result = await db.query(sql, params);
+    if (!result.rows[0])
+      throw new ClientError(
+        404,
+        `Cannot find a user named ${username}. Are you sure you spelled the username correctly?`
+      );
+    res.status(200).json(result.rows[0]);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.get('/api/faveIngredients', authMiddleware, async (req, res, next) => {
   try {
     const sql = `
     select *
@@ -159,6 +292,20 @@ app.post('/api/auth/sign-in', async (req, res, next) => {
     next(err);
   }
 });
+
+application.put(
+  '/api/recipes/:idMeal',
+  authMiddleware,
+  async (req, res, next) => {
+    try {
+      const idMeal = Number(req.params.idMeal);
+
+      const params = [idMeal];
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
 /*
  * Handles paths that aren't handled by any other route handler.
