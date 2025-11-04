@@ -34,26 +34,32 @@ export function SingleRecipe() {
     recipe;
 
   return (
-    <div>
-      <div className="col">
+    <div className="mt-2">
+      <div className="col container-fluid mt-5">
         <div className="row">
           <div className="col">
-            <img src={strMealThumb} alt={strMeal} className="image" />
+            <img
+              src={strMealThumb}
+              alt={strMeal}
+              className="img-fluid width: 30% "
+            />
           </div>
           <div className="col">
             <div className="row">
               <h2>{strMeal}</h2>
             </div>
-            <div className="row">
-              <button className="btn btn-primary" onClick={() => ShareRecipe()}>
+            <div className="row col-6 mx-auto">
+              <button
+                className="btn btn-primary btn-lg m-2"
+                onClick={() => ShareRecipe()}>
                 Share
               </button>
-              <button className="btn btn-secondary">Edit</button>
-              <button className="btn btn-danger">Delete</button>
+              <button className="btn btn-secondary btn-lg m-2">Edit</button>
+              <button className="btn btn-danger btn-lg m-2">Delete</button>
             </div>
           </div>
         </div>
-        <div className="row">
+        <div className="row mt-5">
           <p>{strInstructions}</p>
           {strYoutube ? (
             <p>

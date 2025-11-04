@@ -61,22 +61,34 @@ export function Home() {
       )}
       {user && (
         <div className="flex">
-          {recipes?.map((recipe) => (
-            <div className="card" key={recipe.idMeal}>
-              <Link
-                to={`/recipes/${recipe.idMeal}`}
-                className="card-body"
-                onClick={() => SingleRecipe}>
-                <img className="card-picture" src={recipe.strMealThumb} />
-                <h3>{recipe.strMeal}</h3>
-                <div>
-                  <p>{recipe.measurements}</p>
-                  <p>{recipe.ingredients}</p>
-                </div>
-                <p>{recipe.strInstructions}</p>
-              </Link>
-            </div>
-          ))}
+          <div className="row container-fluid">
+            {recipes?.map((recipe) => (
+              <div className="card col m-2" key={recipe.idMeal}>
+                <Link
+                  to={`/recipes/${recipe.idMeal}`}
+                  className="card-body"
+                  onClick={() => SingleRecipe}>
+                  <div className="row">
+                    <div className="col">
+                      <img
+                        className="img-thumbnail max-width: 50%"
+                        src={recipe.strMealThumb}
+                      />
+                    </div>
+                    <div className="col">
+                      <h3>{recipe.strMeal}</h3>
+                      <div className="row">
+                        <div className="col">
+                          <p>{recipe.ingredients}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <p>{recipe.strInstructions}</p>
+                </Link>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>
