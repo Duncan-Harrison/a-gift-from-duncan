@@ -204,7 +204,7 @@ app.post('/api/recipes/shared', authMiddleware, async (req, res, next) => {
 
 app.get('/api/users/:username', authMiddleware, async (req, res, next) => {
   try {
-    const { username } = req.body;
+    const { username } = req.params;
     const sql = `
     select "username",
           "userId"

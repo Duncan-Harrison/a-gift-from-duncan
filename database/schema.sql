@@ -21,8 +21,7 @@ CREATE TABLE "public"."recipes" (
   "strYoutube" varchar,
   "userId" integer,
   "sharedBy" integer DEFAULT null,
-  "seenShared" bool DEFAULT null,
-  primary key ("idMeal")
+  "seenShared" bool DEFAULT null
 );
 
 CREATE TABLE "public"."faveIngredients" (
