@@ -6,7 +6,7 @@ drop schema "public" cascade;
 
 create schema "public";
 CREATE TABLE "public"."users" (
-  "userId" integer PRIMARY KEY,
+  "userId" serial PRIMARY KEY,
   "username" varchar,
   "hashedpassword" varchar,
   "created_at" timestamp
@@ -18,12 +18,10 @@ CREATE TABLE "public"."recipes" (
   "strInstructions" varchar NOT NULL,
   "strMealThumb" varchar,
   "ingredients" varchar[],
-  "measurements" varchar[],
   "strYoutube" varchar,
   "userId" integer,
   "sharedBy" integer DEFAULT null,
   "seenShared" bool DEFAULT null
-  primary key ("idMeal")
 );
 
 CREATE TABLE "public"."faveIngredients" (
