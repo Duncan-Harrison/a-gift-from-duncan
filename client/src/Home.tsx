@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { type Recipe, readRecipes } from './Read';
 import { SingleRecipe } from './SingleRecipe';
 import { useUser } from './useUser';
+import { AutoFillRecipe } from './AutoFillRecipe';
 
 export function Home() {
   const [recipes, setRecipes] = useState<Recipe[]>();
@@ -16,6 +17,10 @@ export function Home() {
     async function loadRecipes() {
       try {
         const values = await readRecipes();
+        if (values.length < 1) {
+          const firstRecipe = await AutoFillRecipe();
+          if (firstRecipe) values.unshift(firstRecipe);
+        }
         setRecipes(values);
       } catch (error) {
         setError(error);

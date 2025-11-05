@@ -1,6 +1,9 @@
 -- Use SQL insert statements to add any
 -- starting/dummy data to your database tables
--- insert into "recipes" ("idMeal", "strMeal", "strInstructions", "strMealThumb", "ingredients", "measurements", "strYoutube", "userId", "sharedBy", "seenShared")
+-- insert into "recipes" ("idMeal", "strMeal", "strInstructions", "strMealThumb", "ingredients", "strYoutube", "userId", "sharedBy", "seenShared")
+-- values
+--     ("53106", "Warm roast asparagus salad", "step 1\r\nPreheat the oven to 200C/Gas 6/fan 180C. Snap off the woody ends of the asparagus and discard. Arrange the asparagus in a single layer in a baking tray with sides. Cut the tomatoes in half widthways, nestle them in with the asparagus, season with sea salt and pepper and drizzle with olive oil. Roll each bacon rasher into a tight roll (if large, first cut in half crosswise), and arrange in the tray. Drizzle the bacon rolls with the honey and bake for 20 minutes until the tomatoes are soft and the bacon is crisp.\r\n\r\nstep 2\r\nIn the meantime, boil the potatoes until tender. Whisk the vinegar, olive oil, mustard, some sea salt and pepper in a large bowl until blended. Toss the rocket or spinach leaves in half of the dressing, and arrange on a large serving platter.\r\n\r\nstep 3\r\nDrain the potatoes and cut in half. Gently toss them in the rest of the dressing, and arrange on the platter with the asparagus. Tuck in the tomatoes and bacon.", "https://www.themealdb.com/images/media/meals/ktsws11761998344.jpg", {"Asparagus, 500g","Red Wine Vinegar, 2 tbsp","Tomato, 4","Extra Virgin Olive Oil, 1 tbsp","Streaky Bacon, 12","Clear Honey, 1 teaspoon","Jersey Royal Potatoes, 16","Exra Virgin Olive Oil, 2 tblsp","Dijon Mustard, 1 teaspoon"}, null, null, null, null)
+--     ("52775", "Vegan Lasagna")
 -- EXAMPLE:
 
 --  insert into "todos"
