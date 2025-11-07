@@ -299,8 +299,25 @@ application.put(
   async (req, res, next) => {
     try {
       const idMeal = Number(req.params.idMeal);
-
-      const params = [idMeal];
+      if (idMeal === undefined && Number.isInteger(+idMeal)) {
+        throw new ClientError(400, `idMeal is missing or must be an integer.`);
+      }
+      const { ingredients } = req.body;
+      if (ingredients.length < 1 || ingredients === undefined) {
+        throw new ClientError(400, `Ingredients are missing.`);
+      }
+      const sql = `
+        update "recipes"
+        set "ingredients" = $2
+        where "idMeal" = $1
+        returning *;
+      `;
+      const params = [idMeal, ingredients];
+      const result = await db.query(sql, params);
+      const newIngredients = result.rows[0];
+      if (!newIngredients)
+        throw new ClientError(404, `Cannot find this recipe in the database.`);
+      res.status(200).json(newIngredients);
     } catch (err) {
       next(err);
     }

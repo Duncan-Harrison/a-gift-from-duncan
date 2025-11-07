@@ -26,6 +26,8 @@ export function SingleRecipe() {
     }
   }, [idMeal]);
 
+  async function makeSubstitutions() {} //splice method to make change; or access value of ingredient with square bracket notation and then concatenate
+
   if (isLoading) return <div>Loading</div>;
   if (error || !recipe) {
     return <div>Error Loading Recipe</div>;
@@ -79,73 +81,36 @@ export function SingleRecipe() {
             <h3>Ingredients</h3>
           </div>
           <div className="row">
-            <table>
+            <table className="table table-danger table-striped">
               <thead>
                 <tr className="table-danger">
                   <th scope="col">Name & Amount</th>
+                  <th scope="col">Replacements</th>
+                  <th scope="col"></th>
                 </tr>
               </thead>
               <tbody>
-                <tr className="table-default">
-                  <td>{ingredients ? ingredients[0] : ''}</td>
-                </tr>
-                <tr className="table-danger">
-                  <td>{ingredients ? ingredients[1] : ''}</td>
-                </tr>
-                <tr className="table-default">
-                  <td>{ingredients ? ingredients[2] : ''}</td>
-                </tr>
-                <tr className="table-danger">
-                  <td>{ingredients ? ingredients[3] : ''}</td>
-                </tr>
-                <tr className="table-default">
-                  <td>{ingredients ? ingredients[4] : ''}</td>
-                </tr>
-                <tr className="table-danger">
-                  <td>{ingredients ? ingredients[5] : ''}</td>
-                </tr>
-                <tr className="table-default">
-                  <td>{ingredients ? ingredients[6] : ''}</td>
-                </tr>
-                <tr className="table-danger">
-                  <td>{ingredients ? ingredients[7] : ''}</td>
-                </tr>
-                <tr className="table-default">
-                  <td>{ingredients ? ingredients[8] : ''}</td>
-                </tr>
-                <tr className="table-danger">
-                  <td>{ingredients ? ingredients[9] : ''}</td>
-                </tr>
-                <tr className="table-default">
-                  <td>{ingredients ? ingredients[10] : ''}</td>
-                </tr>
-                <tr className="table-danger">
-                  <td>{ingredients ? ingredients[11] : ''}</td>
-                </tr>
-                <tr className="table-default">
-                  <td>{ingredients ? ingredients[12] : ''}</td>
-                </tr>
-                <tr className="table-danger">
-                  <td>{ingredients ? ingredients[13] : ''}</td>
-                </tr>
-                <tr className="table-default">
-                  <td>{ingredients ? ingredients[14] : ''}</td>
-                </tr>
-                <tr className="table-danger">
-                  <td>{ingredients ? ingredients[15] : ''}</td>
-                </tr>
-                <tr className="table-default">
-                  <td>{ingredients ? ingredients[16] : ''}</td>
-                </tr>
-                <tr className="table-danger">
-                  <td>{ingredients ? ingredients[17] : ''}</td>
-                </tr>
-                <tr className="table-default">
-                  <td>{ingredients ? ingredients[18] : ''}</td>
-                </tr>
-                <tr className="table-danger">
-                  <td>{ingredients ? ingredients[19] : ''}</td>
-                </tr>
+                {ingredients?.map((ingredient) => (
+                  <tr key={ingredient}>
+                    <td>{ingredient}</td>
+                    <td>
+                      <form
+                        id={`form-${ingredient}`}
+                        /* onSubmit={} */
+                      >
+                        <input type="text" />
+                      </form>
+                    </td>
+                    <td>
+                      <button
+                        type="button" /* change to submit */
+                        className="btn text-danger bg-white"
+                        form={`form-${ingredient}`}>
+                        Save
+                      </button>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
