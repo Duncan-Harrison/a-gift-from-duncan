@@ -11,7 +11,7 @@ export function Header() {
     <div className="mb-5">
       <nav className="navbar navbar-expand-lg bg-primary-subtle fixed-top justify-content-evenly mb-5">
         <Link to="/" className="text-black">
-          <h1>A Gift From Duncan!</h1>
+          <h1>A Gift From Duncan</h1>
         </Link>
         <Link to="Create" className="text-blue">
           <h3>Create</h3>
