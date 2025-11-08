@@ -1,7 +1,8 @@
 import { type Recipe, readARecipe } from './Read';
 import { useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { ShareRecipe } from './ShareRecipe';
+import { readToken } from './data';
 
 export function SingleRecipe() {
   const { idMeal } = useParams();
@@ -25,6 +26,55 @@ export function SingleRecipe() {
       loadRecipe(idMeal);
     }
   }, [idMeal]);
+
+  async function makeSubstitutions(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    try {
+      setIsLoading(true);
+      const formData = new FormData(event.currentTarget);
+      const sub = Array.from(formData);
+      if (!sub || sub.length <= 0) alert(`No substitutions were offered`);
+      console.log('substitutes: ', sub);
+      const baseline = await fetch(`/api/recipe/${idMeal}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${readToken()}`,
+        },
+      });
+      if (!baseline) throw new Error(`Cannot find your desired recipe.`);
+      const baseRecipe = (await baseline.json()) as Recipe;
+      console.log('Baseline Recipe', baseRecipe);
+      const baseIngredients = baseRecipe.ingredients;
+      console.log('Baseline Ingredients: ', baseIngredients);
+      if (!baseIngredients) {
+        console.log(`No ingredients found.`);
+      } else {
+        for (let i = 0; i < baseIngredients?.length; i++) {
+          baseIngredients.splice(
+            i,
+            1,
+            `${baseIngredients[i]} or ${sub[i].values} in equal parts`
+          );
+        }
+      }
+      console.log(`Updated Ingredients: ${baseIngredients}`);
+      const req = {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(baseIngredients),
+      };
+      const result = await fetch(`/api/recipes/${idMeal}`, req);
+      if (!result.ok) throw new Error(`PUT fetch error ${result.status}`);
+      const newRecipe = (await result.json()) as Recipe;
+      return newRecipe;
+    } catch (err) {
+      alert(`Cannot make a substitution. Error: ${err}.`);
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   if (isLoading) return <div>Loading</div>;
   if (error || !recipe) {
@@ -75,80 +125,48 @@ export function SingleRecipe() {
               <p></p>
             )}
           </div>
+
           <div className="row">
             <h3>Ingredients</h3>
           </div>
-          <div className="row">
-            <table>
-              <thead>
-                <tr className="table-danger">
-                  <th scope="col">Name & Amount</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="table-default">
-                  <td>{ingredients ? ingredients[0] : ''}</td>
-                </tr>
-                <tr className="table-danger">
-                  <td>{ingredients ? ingredients[1] : ''}</td>
-                </tr>
-                <tr className="table-default">
-                  <td>{ingredients ? ingredients[2] : ''}</td>
-                </tr>
-                <tr className="table-danger">
-                  <td>{ingredients ? ingredients[3] : ''}</td>
-                </tr>
-                <tr className="table-default">
-                  <td>{ingredients ? ingredients[4] : ''}</td>
-                </tr>
-                <tr className="table-danger">
-                  <td>{ingredients ? ingredients[5] : ''}</td>
-                </tr>
-                <tr className="table-default">
-                  <td>{ingredients ? ingredients[6] : ''}</td>
-                </tr>
-                <tr className="table-danger">
-                  <td>{ingredients ? ingredients[7] : ''}</td>
-                </tr>
-                <tr className="table-default">
-                  <td>{ingredients ? ingredients[8] : ''}</td>
-                </tr>
-                <tr className="table-danger">
-                  <td>{ingredients ? ingredients[9] : ''}</td>
-                </tr>
-                <tr className="table-default">
-                  <td>{ingredients ? ingredients[10] : ''}</td>
-                </tr>
-                <tr className="table-danger">
-                  <td>{ingredients ? ingredients[11] : ''}</td>
-                </tr>
-                <tr className="table-default">
-                  <td>{ingredients ? ingredients[12] : ''}</td>
-                </tr>
-                <tr className="table-danger">
-                  <td>{ingredients ? ingredients[13] : ''}</td>
-                </tr>
-                <tr className="table-default">
-                  <td>{ingredients ? ingredients[14] : ''}</td>
-                </tr>
-                <tr className="table-danger">
-                  <td>{ingredients ? ingredients[15] : ''}</td>
-                </tr>
-                <tr className="table-default">
-                  <td>{ingredients ? ingredients[16] : ''}</td>
-                </tr>
-                <tr className="table-danger">
-                  <td>{ingredients ? ingredients[17] : ''}</td>
-                </tr>
-                <tr className="table-default">
-                  <td>{ingredients ? ingredients[18] : ''}</td>
-                </tr>
-                <tr className="table-danger">
-                  <td>{ingredients ? ingredients[19] : ''}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          <form id={`form-${idMeal}`} onSubmit={makeSubstitutions}>
+            <div className="row">
+              <table className="table table-danger table-striped">
+                <thead>
+                  <tr className="table-danger">
+                    <th scope="col">Name & Amount</th>
+                    <th scope="col">Substitutions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {ingredients?.map((ingredient) => (
+                    <tr key={ingredient}>
+                      <td>{ingredient}</td>
+                      <td>
+                        <input
+                          type="text"
+                          name={`Substitute ${ingredient}`}
+                          className="form-control"
+                          id={`inputSubstitution${ingredient}`}
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                  <tr>
+                    <td>Save Your Substitutions?</td>
+                    <td>
+                      <button
+                        type="submit" /* change to submit */
+                        className="btn btn-outline-danger text-danger bg-white"
+                        form={`form-${idMeal}`}>
+                        Save
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </form>
         </div>
       </div>
     </>
