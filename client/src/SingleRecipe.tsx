@@ -10,6 +10,7 @@ export function SingleRecipe() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<unknown>();
   const [showModal, setShowModal] = useState(false);
+  const [showForm, setShowForm] = useState(false);
   useEffect(() => {
     async function loadRecipe(idMeal: string) {
       try {
@@ -32,10 +33,14 @@ export function SingleRecipe() {
     try {
       setIsLoading(true);
       const formData = new FormData(event.currentTarget);
-      const sub = Array.from(formData);
+      const subSource = Array.from(formData);
+      let sub = [];
+      for (let j = 0; j < subSource.length; j++) {
+        sub.push(subSource[j][1]);
+      }
       if (!sub || sub.length <= 0) alert(`No substitutions were offered`);
       console.log('substitutes: ', sub);
-      const baseline = await fetch(`/api/recipe/${idMeal}`, {
+      const baseline = await fetch(`/api/recipes/${idMeal}`, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${readToken()}`,
@@ -43,21 +48,22 @@ export function SingleRecipe() {
       });
       if (!baseline) throw new Error(`Cannot find your desired recipe.`);
       const baseRecipe = (await baseline.json()) as Recipe;
-      console.log('Baseline Recipe', baseRecipe);
       const baseIngredients = baseRecipe.ingredients;
       console.log('Baseline Ingredients: ', baseIngredients);
       if (!baseIngredients) {
         console.log(`No ingredients found.`);
-      } else {
-        for (let i = 0; i < baseIngredients?.length; i++) {
+        return;
+      }
+      for (let i = 0; i < baseIngredients?.length; i++) {
+        if (sub[i] !== '') {
           baseIngredients.splice(
             i,
             1,
-            `${baseIngredients[i]} or ${sub[i].values} in equal parts`
+            `${baseIngredients[i]} or a similar amount of ${sub[i]}`
           );
         }
       }
-      console.log(`Updated Ingredients: ${baseIngredients}`);
+      console.log(`Updated Ingredients: `, baseIngredients);
       const req = {
         method: 'PUT',
         headers: {
@@ -68,12 +74,29 @@ export function SingleRecipe() {
       const result = await fetch(`/api/recipes/${idMeal}`, req);
       if (!result.ok) throw new Error(`PUT fetch error ${result.status}`);
       const newRecipe = (await result.json()) as Recipe;
+      setShowForm(false);
       return newRecipe;
     } catch (err) {
       alert(`Cannot make a substitution. Error: ${err}.`);
+      setShowForm(false);
     } finally {
       setIsLoading(false);
     }
+  }
+
+  function flipVisible() {
+    if (showForm === false) {
+      setShowForm(true);
+    } else {
+      setShowForm(false);
+    }
+  }
+
+  let formVisible: string = '';
+  if (showForm === true) {
+    formVisible = 'table-danger-emphasis';
+  } else {
+    formVisible = 'visually-hidden';
   }
 
   if (isLoading) return <div>Loading</div>;
@@ -110,7 +133,11 @@ export function SingleRecipe() {
                   onClick={() => setShowModal(true)}>
                   Share
                 </button>
-                <button className="btn btn-secondary btn-lg m-2">Edit</button>
+                <button
+                  className="btn btn-secondary btn-lg m-2"
+                  onClick={() => flipVisible()}>
+                  Edit
+                </button>
                 <button className="btn btn-danger btn-lg m-2">Delete</button>
               </div>
             </div>
@@ -131,18 +158,20 @@ export function SingleRecipe() {
           </div>
           <form id={`form-${idMeal}`} onSubmit={makeSubstitutions}>
             <div className="row">
-              <table className="table table-danger table-striped">
+              <table className="table table-danger table-striped table-responsive">
                 <thead>
                   <tr className="table-danger">
                     <th scope="col">Name & Amount</th>
-                    <th scope="col">Substitutions</th>
+                    <th scope="col" className={formVisible}>
+                      Substitutions
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {ingredients?.map((ingredient) => (
-                    <tr key={ingredient}>
+                    <tr key={`ingredient ${ingredients.indexOf(ingredient)}`}>
                       <td>{ingredient}</td>
-                      <td>
+                      <td className={formVisible}>
                         <input
                           type="text"
                           name={`Substitute ${ingredient}`}
@@ -152,7 +181,7 @@ export function SingleRecipe() {
                       </td>
                     </tr>
                   ))}
-                  <tr>
+                  <tr className={formVisible}>
                     <td>Save Your Substitutions?</td>
                     <td>
                       <button
