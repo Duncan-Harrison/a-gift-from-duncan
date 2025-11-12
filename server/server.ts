@@ -228,10 +228,34 @@ app.get('/api/faveIngredients', authMiddleware, async (req, res, next) => {
   try {
     const sql = `
     select *
-    from "faveIngredients";
+    from "faveIngredients"
+    where "userId" = $1;
     `;
-    const result = await db.query(sql);
+    const params = [req.user?.userId];
+    const result = await db.query(sql, params);
     res.json(result.rows);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.post('/api/faveIngredients', authMiddleware, async (req, res, next) => {
+  try {
+    const { idIngredient, strIngredient } = req.body;
+    if (!idIngredient) {
+      throw new ClientError(400, 'ingredient ID is a required field.');
+    }
+    const sql = `
+      insert into "faveIngredients" ("userId", "idIngredient", "strIngredient")
+      values ($1, $2, $3)
+      returning *;
+    `;
+    const params = [req.user?.userId, idIngredient, strIngredient];
+    const result = await db.query(sql, params);
+    const newFave = result.rows[0];
+    if (!newFave)
+      throw new ClientError(404, 'Could not add your favorite ingredient.');
+    res.status(201).json(newFave);
   } catch (err) {
     next(err);
   }

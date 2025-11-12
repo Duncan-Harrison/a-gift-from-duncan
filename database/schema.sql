@@ -26,7 +26,8 @@ CREATE TABLE "public"."recipes" (
 
 CREATE TABLE "public"."faveIngredients" (
   "userId" integer NOT NULL,
-  "idIngredient" varchar NOT NULL
+  "idIngredient" varchar NOT NULL,
+  "strIngredient" varchar NOT NULL
 );
 
 ALTER TABLE "recipes" ADD FOREIGN KEY ("userId") REFERENCES "users" ("userId");
