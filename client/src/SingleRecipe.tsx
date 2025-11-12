@@ -34,33 +34,34 @@ export function SingleRecipe() {
       setIsLoading(true);
       const formData = new FormData(event.currentTarget);
       const subSource = Array.from(formData);
-      let sub = [];
+      const sub = [];
       for (let j = 0; j < subSource.length; j++) {
         sub.push(subSource[j][1]);
       }
       if (!sub || sub.length <= 0) alert(`No substitutions were offered`);
       console.log('substitutes: ', sub);
-      const baseline = await fetch(`/api/recipes/${idMeal}`, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${readToken()}`,
-        },
-      });
-      if (!baseline) throw new Error(`Cannot find your desired recipe.`);
-      const baseRecipe = (await baseline.json()) as Recipe;
-      const baseIngredients = baseRecipe.ingredients;
-      console.log('Baseline Ingredients: ', baseIngredients);
+      const baseIngredients = recipe?.ingredients;
       if (!baseIngredients) {
-        console.log(`No ingredients found.`);
+        console.log(`No Ingredients found`);
         return;
       }
       for (let i = 0; i < baseIngredients?.length; i++) {
-        if (sub[i] !== '') {
+        const substitution = sub[i];
+        if (substitution !== '') {
           baseIngredients.splice(
             i,
             1,
-            `${baseIngredients[i]} or a similar amount of ${sub[i]}`
+            `${substitution}, or ${baseIngredients[i]}`
           );
+          const wordCount = baseIngredients[i].split(/\s+/);
+          console.log(wordCount);
+          const uniqueWords = new Set(wordCount);
+          console.log(uniqueWords);
+          const newWords = Array.from(uniqueWords);
+          console.log(newWords);
+          const lastWords = newWords.join(' ');
+          console.log(lastWords);
+          baseIngredients.splice(i, 1, lastWords);
         }
       }
       console.log(`Updated Ingredients: `, baseIngredients);
@@ -68,12 +69,14 @@ export function SingleRecipe() {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${readToken()}`,
         },
-        body: JSON.stringify(baseIngredients),
+        body: JSON.stringify({ ingredients: baseIngredients }),
       };
       const result = await fetch(`/api/recipes/${idMeal}`, req);
       if (!result.ok) throw new Error(`PUT fetch error ${result.status}`);
       const newRecipe = (await result.json()) as Recipe;
+      setRecipe(newRecipe);
       setShowForm(false);
       return newRecipe;
     } catch (err) {

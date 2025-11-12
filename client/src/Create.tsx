@@ -6,7 +6,7 @@ import { addIngredientsAndMeasurements } from './addIngredientsAndMeasurements';
 export type Ingredient = {
   idIngredient: string;
   strIngredient: string;
-  strDescription: string;
+  strDescription: string | null;
   strThumb: string | null;
 };
 
@@ -14,6 +14,7 @@ export function SearchRecipe() {
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [idOfIngredient, setIdOfIngredient] = useState<Ingredient>();
 
   useEffect(() => {
     async function getIngredients(): Promise<void> {
@@ -50,7 +51,6 @@ export function SearchRecipe() {
       const result = await response.json();
       const resultRecipes = result.meals as Recipe[];
       if (resultRecipes && resultRecipes.length) setRecipes(resultRecipes);
-      console.log(resultRecipes);
     } catch (err) {
       console.error(err);
     }
@@ -67,7 +67,6 @@ export function SearchRecipe() {
       const preppedRecipeRes = await preppedRecipeReq.json();
       const preppedRecipe: Recipe = preppedRecipeRes.meals[0];
       addIngredientsAndMeasurements(preppedRecipe);
-      console.log('preppedRecipe: ', preppedRecipe);
       const savedRecipeReq = {
         method: 'POST',
         body: JSON.stringify(preppedRecipe),
@@ -86,7 +85,48 @@ export function SearchRecipe() {
     }
   }
 
-  if (isLoading) return <div className="card-body">Loading...</div>;
+  async function isolateFavorite(name: string) {
+    try {
+      const ingred = await fetch(
+        'https://www.themealdb.com/api/json/v1/1/list.php?i=list',
+        {
+          method: 'GET',
+        }
+      );
+      if (!ingred.ok)
+        throw new Error(`Ingredient fetch error ${ingred.status}`);
+      const iList = await ingred.json();
+      const meals = iList.meals as Ingredient[];
+      for (let i = 0; i < meals.length; i++) {
+        const trueIngredient: Ingredient = {
+          idIngredient: meals[i].idIngredient,
+          strIngredient: meals[i].strIngredient,
+          strDescription: meals[i].strDescription,
+          strThumb: meals[i].strThumb,
+        };
+        if (trueIngredient.strIngredient === name) {
+          setIdOfIngredient(trueIngredient);
+        }
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async function saveIngredientForLater(food: Ingredient) {
+    const ingredientInfo = food;
+    const req = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${readToken()}`,
+      },
+      body: JSON.stringify(ingredientInfo),
+    };
+    const res = await fetch(`/api/faveIngredients`, req);
+    if (!res.ok) throw new Error(`Fetch error ${res.status}`);
+    alert((await res.json()) as Ingredient);
+  }
 
   function toSnakeCase(str: string): string {
     return str
@@ -96,51 +136,74 @@ export function SearchRecipe() {
   }
 
   function handleChange(event: any) {
-    const snakeFormat = toSnakeCase(event.target.value);
+    const item: string = event.target.value;
+    const snakeFormat = toSnakeCase(item);
     displayRecipes(snakeFormat);
+    isolateFavorite(item);
   }
 
+  if (isLoading) return <div className="card-body">Loading...</div>;
+
   return (
-    <div>
-      <div>
-        <select name="Ingredient Select" onChange={handleChange}>
+    <div className="d-flex flex-column justify-content-end mt5">
+      <div className="mt5">
+        {idOfIngredient && <p>{idOfIngredient.strIngredient}</p>}
+        <select
+          name="Ingredient Select"
+          onChange={handleChange}
+          className="form-control">
           <option value="">--Please choose an ingredient--</option>
           {ingredients &&
             ingredients.map((ing: Ingredient) => (
-              <option key={ing.idIngredient} value={ing.strIngredient}>
+              <option
+                key={ing.idIngredient}
+                value={ing.strIngredient}
+                className="column-gap">
                 {ing.strIngredient}
               </option>
             ))}
           ;
         </select>
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={() =>
+            idOfIngredient
+              ? saveIngredientForLater(idOfIngredient)
+              : alert(`No ingredient selected.`)
+          }>
+          Favorite
+        </button>
       </div>
-      {recipes?.length > 0 ? (
-        recipes?.map((r: Recipe) => (
-          <div className="card-body" key={r.idMeal}>
-            <div className="col">
-              <div className="row">
-                <div className="col-4">
-                  <img
-                    src={r.strMealThumb}
-                    className="img-fluid"
-                    alt={r.strMeal}
-                  />
-                </div>
-                <div className="col-8">
-                  <h3>{r.strMeal}</h3>
-                  <button
-                    className="btn btn-primary"
-                    onClick={() => saveRecipe(r.idMeal)}>
-                    Save Recipe
-                  </button>
+      <div className="align-middle mt5">
+        {recipes?.length > 0 ? (
+          recipes?.map((r: Recipe) => (
+            <div className="card-body" key={r.idMeal}>
+              <div className="col">
+                <div className="row">
+                  <div className="col-4">
+                    <img
+                      src={r.strMealThumb}
+                      className="img-fluid"
+                      alt={r.strMeal}
+                    />
+                  </div>
+                  <div className="col-8">
+                    <h3>{r.strMeal}</h3>
+                    <button
+                      className="btn btn-primary"
+                      onClick={() => saveRecipe(r.idMeal)}>
+                      Save Recipe
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))
-      ) : (
-        <p>No recipes were found using this ingredient</p>
-      )}
+          ))
+        ) : (
+          <p>No recipes were found using this ingredient</p>
+        )}
+      </div>
     </div>
   );
 }

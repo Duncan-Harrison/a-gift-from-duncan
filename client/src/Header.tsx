@@ -8,10 +8,13 @@ export function Header() {
   const navigate = useNavigate();
 
   return (
-    <div className="mb-5">
+    <div className="mb5">
       <nav className="navbar navbar-expand-lg bg-primary-subtle fixed-top justify-content-evenly mb-5">
         <Link to="/" className="text-black">
           <h1>A Gift from Duncan</h1>
+        </Link>
+        <Link to="Favorites" className="text-blue">
+          <h3>Favorites</h3>
         </Link>
         <Link to="Create" className="text-blue">
           <h3>Create</h3>
