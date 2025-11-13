@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { type Recipe } from './Read';
 import { readToken } from './data';
 import { addIngredientsAndMeasurements } from './addIngredientsAndMeasurements';
+import { useNavigate } from 'react-router-dom';
 
 export type Ingredient = {
   idIngredient: string;
@@ -15,6 +16,7 @@ export function SearchRecipe() {
   const [isLoading, setIsLoading] = useState(false);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [idOfIngredient, setIdOfIngredient] = useState<Ingredient>();
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function getIngredients(): Promise<void> {
@@ -80,6 +82,7 @@ export function SearchRecipe() {
       const result = (await response.json()) as Recipe;
       alert(result.strMeal + ' has been saved to Your Recipes!');
       setRecipes([...recipes, result]);
+      navigate('/');
     } catch (err) {
       console.error(err);
     }

@@ -1,5 +1,5 @@
 import { type Recipe, readARecipe } from './Read';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { FormEvent, useEffect, useState } from 'react';
 import { ShareRecipe } from './ShareRecipe';
 import { readToken } from './data';
@@ -11,6 +11,7 @@ export function SingleRecipe() {
   const [error, setError] = useState<unknown>();
   const [showModal, setShowModal] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const navigate = useNavigate();
   useEffect(() => {
     async function loadRecipe(idMeal: string) {
       try {
@@ -87,6 +88,28 @@ export function SingleRecipe() {
     }
   }
 
+  async function deleteRecipe(id: string) {
+    try {
+      const req = {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${readToken()}`,
+        },
+      };
+      const res = await fetch(`/api/recipes/${id}`, req);
+      if (!res.ok) throw new Error(`Fetch Error ${res.status}`);
+      await navigate('/');
+      return res;
+    } catch (err) {
+      setError(err);
+    }
+  }
+
+  // const removal = idMeal
+  //   ? deleteRecipe(idMeal)
+  //   : alert(`Recipe cannot be removed at this time.`);
+
   function flipVisible() {
     if (showForm === false) {
       setShowForm(true);
@@ -141,7 +164,13 @@ export function SingleRecipe() {
                   onClick={() => flipVisible()}>
                   Edit
                 </button>
-                <button className="btn btn-danger btn-lg m-2">Delete</button>
+                <button
+                  className="btn btn-danger btn-lg m-2"
+                  onClick={() => {
+                    if (idMeal) deleteRecipe(idMeal);
+                  }}>
+                  Delete
+                </button>
               </div>
             </div>
           </div>
