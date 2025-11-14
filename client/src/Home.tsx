@@ -65,27 +65,24 @@ export function Home() {
         </div>
       )}
       {user && (
-        <div className="flex">
-          <div className="row container-fluid">
+        <div className="flex width: 100%">
+          <div className="row container justify-content-around gap-3">
             {recipes?.map((recipe) => (
-              <div className="card col m-2" key={recipe.idMeal}>
+              <div className="card col-sm-3" key={recipe.idMeal}>
                 <Link
                   to={`/recipes/${recipe.idMeal}`}
                   className="card-body"
                   onClick={() => SingleRecipe}>
                   <div className="row">
-                    <div className="col">
-                      <img
-                        className="img-thumbnail max-width: 50%"
-                        src={recipe.strMealThumb}
-                      />
-                    </div>
+                    {/* <div className="col"> */}
+                    <img className="img-fluid col" src={recipe.strMealThumb} />
+                    {/* </div> */}
                     <div className="col">
                       <h3>{recipe.strMeal}</h3>
-                      <div className="row">
-                        <div className="col">
-                          <p>{recipe.ingredients}</p>
-                        </div>
+                    </div>
+                    <div className="row">
+                      <div className="col">
+                        <p>{recipe.ingredients}</p>
                       </div>
                     </div>
                   </div>
