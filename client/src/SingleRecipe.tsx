@@ -106,10 +106,6 @@ export function SingleRecipe() {
     }
   }
 
-  // const removal = idMeal
-  //   ? deleteRecipe(idMeal)
-  //   : alert(`Recipe cannot be removed at this time.`);
-
   function flipVisible() {
     if (showForm === false) {
       setShowForm(true);
@@ -143,39 +139,43 @@ export function SingleRecipe() {
         <div className="col container-fluid mt-5">
           <div className="row">
             <div className="col">
+              <h2>{strMeal}</h2>
               <img
                 src={strMealThumb}
                 alt={strMeal}
                 className="img-thumbnail width: 30% "
               />
+              <div className="row mx-auto">
+                <div className="col-4">
+                  <button
+                    className="btn btn-primary btn-lg m-2"
+                    onClick={() => setShowModal(true)}>
+                    Share
+                  </button>
+                </div>
+                <div className="col-4">
+                  <button
+                    className="btn btn-secondary btn-lg m-2"
+                    onClick={() => flipVisible()}>
+                    Edit
+                  </button>
+                </div>
+                <div className="col-4">
+                  <button
+                    className="btn btn-danger btn-lg m-2"
+                    onClick={() => {
+                      if (idMeal) deleteRecipe(idMeal);
+                    }}>
+                    Delete
+                  </button>
+                </div>
+              </div>
             </div>
             <div className="col">
-              <div className="row">
-                <h2>{strMeal}</h2>
-              </div>
-              <div className="row col-6 mx-auto">
-                <button
-                  className="btn btn-primary btn-lg m-2"
-                  onClick={() => setShowModal(true)}>
-                  Share
-                </button>
-                <button
-                  className="btn btn-secondary btn-lg m-2"
-                  onClick={() => flipVisible()}>
-                  Edit
-                </button>
-                <button
-                  className="btn btn-danger btn-lg m-2"
-                  onClick={() => {
-                    if (idMeal) deleteRecipe(idMeal);
-                  }}>
-                  Delete
-                </button>
-              </div>
+              <p className="mt-5">{strInstructions}</p>
             </div>
           </div>
           <div className="row mt-5">
-            <p>{strInstructions}</p>
             {strYoutube ? (
               <p>
                 <a href={strYoutube}>Watch Tutorial</a>

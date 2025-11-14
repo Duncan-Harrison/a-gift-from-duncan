@@ -2,14 +2,26 @@ import { Outlet, Link } from 'react-router-dom';
 import './Header.css';
 import { useUser } from './useUser';
 import { useNavigate } from 'react-router-dom';
+import React, { useRef, useState, useEffect } from 'react';
 
 export function Header() {
   const { handleSignOut } = useUser();
   const navigate = useNavigate();
 
+  const navRef = useRef<HTMLElement | null>(null);
+  const [navHeight, setNavHeight] = useState<number>(0);
+  useEffect(() => {
+    const updateHeight = () => setNavHeight(navRef.current?.offsetHeight ?? 0);
+    updateHeight();
+    window.addEventListener('resize', updateHeight);
+    return () => window.removeEventListener('resize', updateHeight);
+  }, []);
+
   return (
-    <div className="mb5">
-      <nav className="navbar navbar-expand-lg bg-primary-subtle fixed-top justify-content-evenly mb-5">
+    <div className="">
+      <nav
+        ref={navRef}
+        className="navbar navbar-expand-lg bg-primary-subtle fixed-top justify-content-evenly mb-5">
         <Link to="/" className="text-black">
           <h1>A Gift from Duncan</h1>
         </Link>
@@ -27,12 +39,10 @@ export function Header() {
           }}>
           Sign Out
         </button>
-        {/* <ul className="list-group list-group-horizontal bg-primary-subtle">
-          <li className="list-group-item flex-fill bg-primary-subtle"></li>
-          <li className="list-group-item flex-fill bg-primary-subtle"></li>
-          <li className="list-group-item flex-fill bg-primary-subtle"></li>
-        </ul> */}
       </nav>
+
+      <div style={{ height: navHeight }} />
+
       {<Outlet />}
     </div>
   );
