@@ -143,7 +143,7 @@ export function SingleRecipe() {
               <img
                 src={strMealThumb}
                 alt={strMeal}
-                className="img-thumbnail width: 30% "
+                className="img-thumbnail my-2"
               />
               <div className="row mx-auto">
                 <div className="col-4">
@@ -175,17 +175,22 @@ export function SingleRecipe() {
               <p className="mt-5">{strInstructions}</p>
             </div>
           </div>
-          <div className="row mt-5">
-            {strYoutube ? (
-              <p>
-                <a href={strYoutube}>Watch Tutorial</a>
-              </p>
-            ) : (
-              <p></p>
-            )}
+          <div className="row spacer my-3"></div>
+          <div className="row justify-content-center my-3">
+            <div className="col-5">
+              {strYoutube ? (
+                <button
+                  onClick={() => window.open(`${strYoutube}`, '_blank')}
+                  className="btn btn-primary">
+                  Watch Tutorial
+                </button>
+              ) : (
+                <p></p>
+              )}
+            </div>
           </div>
 
-          <div className="row">
+          <div className="row mb-2">
             <h3>Ingredients</h3>
           </div>
           <form id={`form-${idMeal}`} onSubmit={makeSubstitutions}>

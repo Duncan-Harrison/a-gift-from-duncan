@@ -46,20 +46,22 @@ export function Home() {
     <div>
       {!user && (
         <div className="card">
-          <div className="card-body">
-            <div className="m-2">
-              <button
-                className="btn btn-primary"
-                onClick={() => navigate('sign-up')}>
-                Sign Up
-              </button>
-            </div>
-            <div className="m-2">
-              <button
-                className="btn btn-primary"
-                onClick={() => navigate('sign-in')}>
-                Sign In
-              </button>
+          <div className="col-12 card-body">
+            <div className="row">
+              <div className="col-sm-5 m-1">
+                <button
+                  className="btn btn-primary"
+                  onClick={() => navigate('sign-up')}>
+                  Sign Up
+                </button>
+              </div>
+              <div className="col-sm-5 m-1">
+                <button
+                  className="btn btn-primary"
+                  onClick={() => navigate('sign-in')}>
+                  Sign In
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -79,13 +81,8 @@ export function Home() {
                     </div>
                     <div className="col">
                       <p>{recipe.strMeal}</p>
-                      {/* <div className="row">
-                        <div className="col"></div>
-                      </div> */}
                     </div>
                   </div>
-                  {/* <p>{recipe.ingredients}</p>
-                  <p>{recipe.strInstructions}</p> */}
                 </Link>
               </div>
             ))}
