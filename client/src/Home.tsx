@@ -68,7 +68,7 @@ export function Home() {
         <div className="flex">
           <div className="row container justify-content-around gap-3">
             {recipes?.map((recipe) => (
-              <div className="card col-sm-3" key={recipe.idMeal}>
+              <div className="card col-md-3" key={recipe.idMeal}>
                 <Link
                   to={`/recipes/${recipe.idMeal}`}
                   className="card-body"

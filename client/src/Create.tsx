@@ -150,38 +150,45 @@ export function SearchRecipe() {
   return (
     <div className="d-flex flex-column justify-content-end mt5">
       <div className="mt5">
-        {idOfIngredient && <p>{idOfIngredient.strIngredient}</p>}
-        <select
-          name="Ingredient Select"
-          onChange={handleChange}
-          className="form-control">
-          <option value="">--Please choose an ingredient--</option>
-          {ingredients &&
-            ingredients.map((ing: Ingredient) => (
-              <option
-                key={ing.idIngredient}
-                value={ing.strIngredient}
-                className="column-gap">
-                {ing.strIngredient}
-              </option>
-            ))}
-          ;
-        </select>
-        <button
-          type="button"
-          className="btn btn-primary"
-          onClick={() =>
-            idOfIngredient
-              ? saveIngredientForLater(idOfIngredient)
-              : alert(`No ingredient selected.`)
-          }>
-          Favorite
-        </button>
+        {idOfIngredient && <h3>{idOfIngredient.strIngredient}</h3>}
+        <div className="row justify-content-around">
+          <div className="col-10 col-sm-9 mt-2">
+            <select
+              name="Ingredient Select"
+              onChange={handleChange}
+              className="form-control">
+              <option value="">--Please choose an ingredient--</option>
+              {ingredients &&
+                ingredients.map((ing: Ingredient) => (
+                  <option
+                    key={ing.idIngredient}
+                    value={ing.strIngredient}
+                    className="column-gap">
+                    {ing.strIngredient}
+                  </option>
+                ))}
+              ;
+            </select>
+          </div>
+          <div className="col-sm-3 mt-2">
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() =>
+                idOfIngredient
+                  ? saveIngredientForLater(idOfIngredient)
+                  : alert(`No ingredient selected.`)
+              }>
+              Favorite
+            </button>
+          </div>
+        </div>
       </div>
+      <div className="spacer m-2"></div>
       <div className="align-middle mt5">
         {recipes?.length > 0 ? (
           recipes?.map((r: Recipe) => (
-            <div className="card-body" key={r.idMeal}>
+            <div className="card-body m-2" key={r.idMeal}>
               <div className="col">
                 <div className="row">
                   <div className="col-4">
@@ -194,7 +201,7 @@ export function SearchRecipe() {
                   <div className="col-8">
                     <h3>{r.strMeal}</h3>
                     <button
-                      className="btn btn-primary"
+                      className="btn btn-primary mt-2"
                       onClick={() => saveRecipe(r.idMeal)}>
                       Save Recipe
                     </button>

@@ -22,23 +22,41 @@ export function Header() {
       <nav
         ref={navRef}
         className="navbar navbar-expand-lg bg-primary-subtle fixed-top justify-content-evenly mb-5">
-        <Link to="/" className="text-black">
-          <h1>A Gift from Duncan</h1>
-        </Link>
-        <Link to="Favorites" className="text-blue">
-          <h3>Favorites</h3>
-        </Link>
-        <Link to="Create" className="text-blue">
-          <h3>Create</h3>
+        <Link to="/" className="navbar-brand text-black">
+          <h2>A Gift from Duncan</h2>
         </Link>
         <button
-          className="btn btn-primary"
-          onClick={() => {
-            handleSignOut();
-            navigate('/');
-          }}>
-          Sign Out
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation">
+          <span className="navbar-toggler-icon"></span>
         </button>
+        <div
+          className="collapse navbar-collapse justify-content-evenly"
+          id="navbarSupportedContent">
+          <div className="navbar-nav justify-content-evenly">
+            <Link to="Favorites" className="nav-link text-blue">
+              <h3>Favorites</h3>
+            </Link>
+            <Link to="Create" className="nav-link text-blue">
+              <h3>Create</h3>
+            </Link>
+            <div className="nav-link">
+              <button
+                className="btn btn-primary"
+                onClick={() => {
+                  handleSignOut();
+                  navigate('/');
+                }}>
+                Sign Out
+              </button>
+            </div>
+          </div>
+        </div>
       </nav>
 
       <div style={{ height: navHeight }} />
