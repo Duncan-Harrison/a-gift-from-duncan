@@ -51,6 +51,24 @@ export function FavoriteIngredients() {
     }
   }
 
+  async function deleteFavorite(id: string) {
+    try {
+      const req = {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${readToken()}`,
+        },
+      };
+      const res = await fetch(`/api/faveIngredients/${id}`, req);
+      if (!res.ok) throw new Error(`Fetch Error ${res.status}`);
+      await navigate('/');
+      return res;
+    } catch (err) {
+      setError(err);
+    }
+  }
+
   async function saveRecipe(idMeal: string) {
     try {
       const initialRecipe = new Request(
@@ -104,6 +122,11 @@ export function FavoriteIngredients() {
           className="card m-1"
           onClick={() => favoritesPool(ingredient.strIngredient)}>
           <h3>{ingredient.strIngredient}</h3>
+          <button
+            className="btn btn-danger mt-1"
+            onClick={() => deleteFavorite(ingredient.idIngredient)}>
+            Delete Ingredient
+          </button>
         </div>
       ))}
       <div className="spacer m-5"></div>

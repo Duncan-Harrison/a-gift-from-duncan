@@ -363,6 +363,53 @@ app.delete('/api/recipes/:idMeal', authMiddleware, async (req, res, next) => {
   }
 });
 
+app.delete(
+  '/api/faveIngredients/:idIngredient',
+  authMiddleware,
+  async (req, res, next) => {
+    try {
+      const { idIngredient } = req.params;
+      if (!idIngredient) throw new ClientError(400, 'Recipe is not found');
+      const sql = `
+      delete
+        from "faveIngredients"
+        where "idIngredient" = $1
+        returning *;
+    `;
+      const params = [idIngredient];
+      const result = await db.query(sql, params);
+      const deletion = result.rows[0];
+      if (!deletion)
+        throw new ClientError(404, `The grade does not exist in the table.`);
+      res.status(204).json(deletion);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+app.delete('/api/users/:userId', authMiddleware, async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    if (!userId) throw new ClientError(400, 'Recipe is not found');
+    const sql = `
+      delete
+        from "users",
+            "recipes"
+        where "idIngredient" = $1
+        returning *;
+    `;
+    const params = [userId];
+    const result = await db.query(sql, params);
+    const deletion = result.rows[0];
+    if (!deletion)
+      throw new ClientError(404, `The grade does not exist in the table.`);
+    res.status(204).json(deletion);
+  } catch (err) {
+    next(err);
+  }
+});
+
 /*
  * Handles paths that aren't handled by any other route handler.
  * It responds with `index.html` to support page refreshes with React Router.
