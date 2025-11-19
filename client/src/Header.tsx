@@ -2,12 +2,10 @@ import { Outlet, Link } from 'react-router-dom';
 import './Header.css';
 import { useUser } from './useUser';
 import { useNavigate } from 'react-router-dom';
-import React, { useRef, useState, useEffect } from 'react';
-
+import { useRef, useState, useEffect } from 'react';
 export function Header() {
   const { handleSignOut } = useUser();
   const navigate = useNavigate();
-
   const navRef = useRef<HTMLElement | null>(null);
   const [navHeight, setNavHeight] = useState<number>(0);
   useEffect(() => {
@@ -54,8 +52,6 @@ export function Header() {
               }}>
               Sign Out
             </button>
-            {/* </div> */}
-            {/*  */}
           </div>
         </div>
       </nav>

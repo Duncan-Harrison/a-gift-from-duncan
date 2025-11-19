@@ -136,7 +136,6 @@ app.post('/api/recipes', authMiddleware, async (req, res, next) => {
       ingredients,
       strYoutube,
     } = req.body;
-    console.log('Recipe Body', req.body);
     if (idMeal === undefined || strMeal === undefined) {
       throw new ClientError(400, `idMeal or name of Meal is missing`);
     }
@@ -174,7 +173,6 @@ app.post('/api/recipes/shared', authMiddleware, async (req, res, next) => {
       strYoutube,
       userId,
     } = req.body;
-    console.log('Recipe Body', req.body);
     if (idMeal === undefined || strMeal === undefined) {
       throw new ClientError(400, `idMeal or name of Meal is missing`);
     }

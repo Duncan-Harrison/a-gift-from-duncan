@@ -19,7 +19,6 @@ export function ShareRecipe({ show, recipeId, onClose }: ShareRecipeProps) {
     try {
       const initialRecipe = await readARecipe(idMeal);
       if (!initialRecipe) throw new Error(`Cannot find recipe.`);
-      console.log('initial recipe: ', initialRecipe);
       const userDestination = await fetch(`/api/users/${username}`, {
         method: 'GET',
         headers: {
@@ -28,7 +27,6 @@ export function ShareRecipe({ show, recipeId, onClose }: ShareRecipeProps) {
       });
       if (!userDestination) throw new Error(`Cannot find your intended user.`);
       const parse = await userDestination.json();
-      console.log('parsed User :', parse);
       initialRecipe.userId = parse.userId;
       const sendRecipe = {
         method: 'POST',

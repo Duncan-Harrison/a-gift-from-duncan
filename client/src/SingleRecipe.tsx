@@ -40,10 +40,8 @@ export function SingleRecipe() {
         sub.push(subSource[j][1]);
       }
       if (!sub || sub.length <= 0) alert(`No substitutions were offered`);
-      console.log('substitutes: ', sub);
       const baseIngredients = recipe?.ingredients;
       if (!baseIngredients) {
-        console.log(`No Ingredients found`);
         return;
       }
       for (let i = 0; i < baseIngredients?.length; i++) {
@@ -55,17 +53,12 @@ export function SingleRecipe() {
             `${substitution}, or ${baseIngredients[i]}`
           );
           const wordCount = baseIngredients[i].split(/\s+/);
-          console.log(wordCount);
           const uniqueWords = new Set(wordCount);
-          console.log(uniqueWords);
           const newWords = Array.from(uniqueWords);
-          console.log(newWords);
           const lastWords = newWords.join(' ');
-          console.log(lastWords);
           baseIngredients.splice(i, 1, lastWords);
         }
       }
-      console.log(`Updated Ingredients: `, baseIngredients);
       const req = {
         method: 'PUT',
         headers: {
