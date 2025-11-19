@@ -21,7 +21,7 @@ export function Header() {
     <div className="">
       <nav
         ref={navRef}
-        className="navbar navbar-expand-lg bg-primary-subtle fixed-top justify-content-evenly mb-5">
+        className="navbar navbar-expand-lg bg-primary-subtle justify-content-evenly fixed-top mb-5">
         <Link to="/" className="navbar-brand text-black">
           <h2>A Gift from Duncan</h2>
         </Link>
@@ -38,23 +38,24 @@ export function Header() {
         <div
           className="collapse navbar-collapse justify-content-evenly"
           id="navbarSupportedContent">
-          <div className="navbar-nav justify-content-evenly">
-            <Link to="Favorites" className="nav-link text-blue">
-              <h3>Favorites</h3>
-            </Link>
-            <Link to="Create" className="nav-link text-blue">
-              <h3>Create</h3>
-            </Link>
-            <div className="nav-link">
-              <button
-                className="btn btn-primary"
-                onClick={() => {
-                  handleSignOut();
-                  navigate('/');
-                }}>
-                Sign Out
-              </button>
-            </div>
+          {/* <div className="navbar-nav"> */}
+          <Link to="Favorites" className="nav-link text-blue">
+            <h3>Favorites</h3>
+          </Link>
+          <Link to="Create" className="nav-link text-blue">
+            <h3>Create</h3>
+          </Link>
+          <div className="nav-link">
+            <button
+              className="btn btn-primary"
+              onClick={() => {
+                handleSignOut();
+                navigate('/');
+              }}>
+              Sign Out
+            </button>
+            {/* </div> */}
+            {/*  */}
           </div>
         </div>
       </nav>
