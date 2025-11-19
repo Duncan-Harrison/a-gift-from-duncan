@@ -36,8 +36,8 @@ export function RegistrationForm() {
       <h2 className="text-x1 font-bold">Register New User</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          <div className="mb-3">
-            <label htmlFor="username" className="form-label">
+          <div className="m-3">
+            <label htmlFor="username" className="form-label mx-2">
               Username
               <input
                 required
@@ -47,7 +47,7 @@ export function RegistrationForm() {
                 id="inputUsername"
               />
             </label>
-            <label htmlFor="password" className="form-label">
+            <label htmlFor="password" className="form-label mx-2">
               Password
               <input
                 name="password"

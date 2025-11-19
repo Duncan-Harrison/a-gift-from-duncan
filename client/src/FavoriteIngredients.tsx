@@ -85,11 +85,11 @@ export function FavoriteIngredients() {
   if (error)
     return (
       <>
-        <div>
+        <div className="m-2">
           Error Loading{' '}
           {error instanceof Error ? error.message : 'Unknown Error'}
         </div>
-        <div>
+        <div className="m-2">
           <button className="btn bt-primary" onClick={() => navigate('/')}>
             Return to Home
           </button>
@@ -98,15 +98,15 @@ export function FavoriteIngredients() {
     );
 
   return (
-    <div>
+    <div className="p-1">
       {favorites?.map((ingredient) => (
         <div
-          className="card col"
+          className="card m-1"
           onClick={() => favoritesPool(ingredient.strIngredient)}>
           <h3>{ingredient.strIngredient}</h3>
         </div>
       ))}
-      <div className="spacer"></div>
+      <div className="spacer m-5"></div>
       <div className="align-middle mt5">
         {recipes ? (
           recipes?.map((r: Recipe) => (
@@ -123,7 +123,7 @@ export function FavoriteIngredients() {
                   <div className="col-8">
                     <h3>{r.strMeal}</h3>
                     <button
-                      className="btn btn-primary"
+                      className="btn btn-primary mt-1"
                       onClick={() => saveRecipe(r.idMeal)}>
                       Save Recipe
                     </button>

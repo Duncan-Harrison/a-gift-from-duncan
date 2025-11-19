@@ -46,50 +46,43 @@ export function Home() {
     <div>
       {!user && (
         <div className="card">
-          <div className="card-body">
-            <div className="m-2">
-              <button
-                className="btn btn-primary"
-                onClick={() => navigate('sign-up')}>
-                Sign Up
-              </button>
-            </div>
-            <div className="m-2">
-              <button
-                className="btn btn-primary"
-                onClick={() => navigate('sign-in')}>
-                Sign In
-              </button>
+          <div className="col-12 card-body">
+            <div className="row">
+              <div className="col-sm-5 m-1">
+                <button
+                  className="btn btn-primary"
+                  onClick={() => navigate('sign-up')}>
+                  Sign Up
+                </button>
+              </div>
+              <div className="col-sm-5 m-1">
+                <button
+                  className="btn btn-primary"
+                  onClick={() => navigate('sign-in')}>
+                  Sign In
+                </button>
+              </div>
             </div>
           </div>
         </div>
       )}
       {user && (
         <div className="flex">
-          <div className="row container-fluid">
+          <div className="row container justify-content-around gap-3">
             {recipes?.map((recipe) => (
-              <div className="card col m-2" key={recipe.idMeal}>
+              <div className="card col-md-3" key={recipe.idMeal}>
                 <Link
                   to={`/recipes/${recipe.idMeal}`}
                   className="card-body"
                   onClick={() => SingleRecipe}>
                   <div className="row">
                     <div className="col">
-                      <img
-                        className="img-thumbnail max-width: 50%"
-                        src={recipe.strMealThumb}
-                      />
+                      <img className="img-fluid" src={recipe.strMealThumb} />
                     </div>
                     <div className="col">
-                      <h3>{recipe.strMeal}</h3>
-                      <div className="row">
-                        <div className="col">
-                          <p>{recipe.ingredients}</p>
-                        </div>
-                      </div>
+                      <p>{recipe.strMeal}</p>
                     </div>
                   </div>
-                  <p>{recipe.strInstructions}</p>
                 </Link>
               </div>
             ))}
