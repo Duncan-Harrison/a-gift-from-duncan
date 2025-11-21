@@ -30,8 +30,6 @@ CREATE TABLE "public"."faveIngredients" (
   "strIngredient" varchar NOT NULL
 );
 
-ALTER TABLE "recipes" ADD FOREIGN KEY ("userId") REFERENCES "users" ("userId");
-
-ALTER TABLE "recipes" ADD FOREIGN KEY ("sharedBy") REFERENCES "users" ("userId");
-
-ALTER TABLE "faveIngredients" ADD FOREIGN KEY ("userId") REFERENCES "users" ("userId");
+ALTER TABLE "public"."recipes" ADD FOREIGN KEY ("userId") REFERENCES "public"."users" ("userId") ON DELETE CASCADE;
+ALTER TABLE "public"."recipes" ADD FOREIGN KEY ("sharedBy") REFERENCES "public"."users" ("userId") ON DELETE SET NULL;
+ALTER TABLE "public"."faveIngredients" ADD FOREIGN KEY ("userId") REFERENCES "public"."users" ("userId") ON DELETE CASCADE;

@@ -394,9 +394,8 @@ app.delete('/api/users/:userId', authMiddleware, async (req, res, next) => {
     if (!userId) throw new ClientError(400, 'Recipe is not found');
     const sql = `
       delete
-        from "users",
-            "recipes"
-        where "idIngredient" = $1
+        from "users"
+        where "userId" = $1
         returning *;
     `;
     const params = [userId];

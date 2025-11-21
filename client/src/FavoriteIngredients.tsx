@@ -118,10 +118,13 @@ export function FavoriteIngredients() {
   return (
     <div className="p-1">
       {favorites?.map((ingredient) => (
-        <div
-          className="card m-1"
-          onClick={() => favoritesPool(ingredient.strIngredient)}>
+        <div className="card m-1 bg-primary-subtle">
           <h3>{ingredient.strIngredient}</h3>
+          <button
+            className="btn btn-primary my-1"
+            onClick={() => favoritesPool(ingredient.strIngredient)}>
+            View Recipes
+          </button>
           <button
             className="btn btn-danger mt-1"
             onClick={() => deleteFavorite(ingredient.idIngredient)}>

@@ -19,8 +19,8 @@ export function Header() {
     <div className="">
       <nav
         ref={navRef}
-        className="navbar navbar-expand-lg bg-primary-subtle justify-content-evenly fixed-top mb-5">
-        <Link to="/" className="navbar-brand text-black">
+        className="navbar navbar-expand-lg bg-primary-subtle justify-content-around fixed-top">
+        <Link to="/" className="navbar-brand text-black m-2">
           <h2>A Gift from Duncan</h2>
         </Link>
         <button
@@ -34,7 +34,7 @@ export function Header() {
           <span className="navbar-toggler-icon"></span>
         </button>
         <div
-          className="collapse navbar-collapse justify-content-evenly"
+          className="collapse navbar-collapse justify-content-around"
           id="navbarSupportedContent">
           {/* <div className="navbar-nav"> */}
           <Link to="Favorites" className="nav-link text-blue">
