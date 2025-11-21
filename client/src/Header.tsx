@@ -16,7 +16,7 @@ export function Header() {
   }, []);
 
   return (
-    <div className="">
+    <div>
       <nav
         ref={navRef}
         className="navbar navbar-expand-lg bg-primary-subtle justify-content-around fixed-top">
