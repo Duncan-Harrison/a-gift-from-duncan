@@ -5,14 +5,14 @@ import { type Recipe, readRecipes } from './Read';
 import { SingleRecipe } from './SingleRecipe';
 import { useUser } from './useUser';
 import { AutoFillRecipe } from './AutoFillRecipe';
-// import { readToken } from './data';
+import { readToken } from './data';
 
 export function Home() {
   const [recipes, setRecipes] = useState<Recipe[]>();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<unknown>();
   const { user } = useUser();
-  // const { handleSignOut } = useUser();
+  const { handleSignOut } = useUser();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -35,24 +35,24 @@ export function Home() {
     else setIsLoading(false);
   }, []);
 
-  // async function deleteUser(id: number) {
-  //   try {
-  //     const req = {
-  //       method: 'DELETE',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         Authorization: `Bearer ${readToken()}`,
-  //       },
-  //     };
-  //     const res = await fetch(`/api/user/${id}`, req);
-  //     if (!res.ok) throw new Error(`Fetch Error ${res.status}`);
-  //     handleSignOut;
-  //     await navigate('sign-up');
-  //     return res;
-  //   } catch (err) {
-  //     setError(err);
-  //   }
-  // }
+  async function deleteUser(id: number) {
+    try {
+      const req = {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${readToken()}`,
+        },
+      };
+      const res = await fetch(`/api/users/${id}`, req);
+      if (!res.ok) throw new Error(`Fetch Error ${res.status}`);
+      handleSignOut();
+      await navigate('sign-up');
+      return res;
+    } catch (err) {
+      setError(err);
+    }
+  }
 
   if (isLoading) return <div>Loading...</div>;
 
@@ -110,13 +110,13 @@ export function Home() {
           </div>
           <div className="spacer my-5"></div>
           <div className="row container justify-content-center">
-            {/* <div className="col-5">
+            <div className="col-5">
               <button
                 className="btn btn-danger"
                 onClick={() => deleteUser(user.userId)}>
                 Unsubscribe
               </button>
-            </div> */}
+            </div>
           </div>
         </div>
       )}
